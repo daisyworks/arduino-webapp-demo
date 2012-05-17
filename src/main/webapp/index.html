@@ -1,0 +1,177 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>DaisyWorks Door Opener Demo</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <!-- Le styles -->
+    <link href="bootstrap/css/bootstrap.css" rel="stylesheet">
+    <style type="text/css">
+      body {
+        padding-top: 60px;
+        padding-bottom: 40px;
+      }
+    </style>
+    <link href="bootstrap/css/bootstrap-responsive.css" rel="stylesheet">
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <!-- Le fav and touch icons -->
+    <link rel="shortcut icon" href="favicon.ico">
+    
+    <script src="javascripts/vendor/jquery-1.7.2.min.js"></script>
+    <!-- <script src="bootstrap/js/bootstrap.js"></script> -->
+    <script src="bootstrap/js/bootstrap.min.js"></script>
+
+    <script>
+    $(document).ready(function() {
+    	
+    	// fetch the ports on page load
+    	fetch();
+    	
+    	// default behavior on 'close' event is to remove from DOM
+    	// we just want to hide it
+    	$('.alert').bind('close', function(e, s) {
+    		e.preventDefault();
+    		$(e.currentTarget).fadeOut('fast');
+    	});
+    	
+    	// toggle door open
+    	$('#onButton').click(function() {
+    	  // which port is selected?
+      	  var option = $('#ports option:selected')[0];
+    	  var portId = $(option).attr('_portId');
+      	  console.log("portId: "+portId);
+    	  $.ajax({
+    	    url: '/service/door/toggle/'+portId+'/1',
+    	    success: function(data) {
+    	    	if("true" === data) {
+    	    		_status("open", true);
+    	    	} else { 
+    	    		_status("open", false); 
+    	        }
+    	    },
+    	    error: function(xhr, status, ex) { 
+    	    	_status("open", false); 
+    	    }
+    	  });
+    	});
+    	  
+    	// toggle door closed
+    	$('#offButton').click(function() {
+    	  // which port is selected?
+    	  var option = $('#ports option:selected')[0];
+    	  var portId = $(option).attr('_portId');
+    	  console.log("portId: "+portId);
+    	  $.ajax({
+            url: '/service/door/toggle/'+portId+'/0',
+            success: function(data) {
+              if("true" === data) {
+            	  _status("closed", true);
+              } else { 
+            	  _status("closed", false); 
+              }
+            },
+            error: function(xhr, status, ex) { 
+            	_status("closed", false); 
+            }
+    	  });
+    	});
+    	
+    	// fetch the list of usb ports
+    	function fetch() {
+    	  $.getJSON('/service/door/ports/', function(data) {
+    		 var items = [];
+    		 // we get multiple layers of wrapping with JAXB
+    		 // probably could fix this on server side
+    		 $.each(data, function (_key, _val) {
+    			$.each(_val, function (k, v) {
+    				$.each(v, function(key, val) {
+    					// creates => <option _portId='1'>/dev/ttyUSB0</option>
+    					items.push("<option _portId='"+val.id+"'>"+val.path+"</option>");
+    				});
+    			}); 
+    		 });
+    		 $('#ports').html(items.join(''));
+    	  });
+    	}
+    	
+    	// shows the status success / error to the user
+    	function _status(toggleState, success) {
+    	  if (success) {
+    		  $('.alert-success p').text('Door should be '+toggleState);
+    		  $('.alert-success').fadeIn('slow');
+    	  } else {
+    		  $('.alert-error').fadeIn('slow');
+    	  }
+    	} 
+    });
+    </script>
+
+  </head>
+
+  <body>
+
+    <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container">
+          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </a>
+          <a class="brand" href="#">DaisyWorks Demo</a>
+          <div class="nav-collapse">
+            <ul class="nav">
+              <li class="active"><a href="#">Home</a></li>
+              <li><a href="#about">About</a></li>
+            </ul>
+          </div><!--/.nav-collapse -->
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+
+      <!-- Main hero unit for a primary marketing message or call to action -->
+      <div class="hero-unit">
+        <h2 style="font-size: 230%;">Door Opener!</h2>
+        <p>Select the Arduino USB port and click open/close.</p>
+        <select id="ports" class="span2">
+        
+        </select>
+        <h4>Door</h4>
+  		<button id="onButton" class="btn btn-primary">Open</button>
+  		<button id="offButton" class="btn btn-primary">Close</button>
+  		<div style="margin-top: 10px; display:none;" class="alert alert-block alert-error">
+  		  <a class="close" data-dismiss="alert" href="#">&times;</a>
+  		  <h4 class="alert-heading">Error</h4>
+  		  <p style="font-size:13px;">Yikes, something went wrong; check the java console for logger errors; you can also check your browser's debug console</p>
+  		</div>
+  		<div style="margin-top: 10px; display:none;" class="alert alert-block alert-success">
+  		  <a class="close" data-dismiss="alert" href="#">&times;</a>
+  		  <h4 class="alert-heading">Success!</h4>
+  		  <p style="font-size:13px;">The door should be ?</p>
+  		</div>
+      </div>
+
+	  <!-- spacer row -->
+      <div class="row"></div>
+		
+      <hr>
+
+      <footer>
+        <p>DaisyWorks, Inc. 2012 | This software is license free.</p> <a href="http://daisyworks.com">http://daisyworks.com</a>
+      </footer>
+
+    </div> <!-- /container -->
+
+  </body>
+</html>
