@@ -47,10 +47,10 @@
     	$('#onButton').click(function() {
     	  // which port is selected?
       	  var option = $('#ports option:selected')[0];
-    	  var portId = $(option).attr('_portId');
-      	  console.log("portId: "+portId);
+    	  var portName = $(option).attr('_portName');
+      	  console.log("portName: "+portName);
     	  $.ajax({
-    	    url: '/service/door/toggle/'+portId+'/1',
+    	    url: '/service/door/toggle/'+portName+'/1',
     	    success: function(data) {
     	    	if("true" === data) {
     	    		_status("open", true);
@@ -68,10 +68,10 @@
     	$('#offButton').click(function() {
     	  // which port is selected?
     	  var option = $('#ports option:selected')[0];
-    	  var portId = $(option).attr('_portId');
-    	  console.log("portId: "+portId);
+    	  var portName = $(option).attr('_portName');
+    	  console.log("portName: "+portName);
     	  $.ajax({
-            url: '/service/door/toggle/'+portId+'/0',
+            url: '/service/door/toggle/'+portName+'/0',
             success: function(data) {
               if("true" === data) {
             	  _status("closed", true);
@@ -86,22 +86,24 @@
     	});
     	
     	// fetch the list of usb ports
-    	function fetch() {
-    	  $.getJSON('/service/door/ports/', function(data) {
-    		 var items = [];
-    		 // we get multiple layers of wrapping with JAXB
-    		 // probably could fix this on server side
-    		 $.each(data, function (_key, _val) {
-    			$.each(_val, function (k, v) {
-    				$.each(v, function(key, val) {
-    					// creates => <option _portId='1'>/dev/ttyUSB0</option>
-    					items.push("<option _portId='"+val.id+"'>"+val.path+"</option>");
-    				});
-    			}); 
-    		 });
-    		 $('#ports').html(items.join(''));
-    	  });
-    	}
+        function fetch() {
+                $.getJSON('/service/door/ports/', function(data) {
+                     var items = [];
+                     // we get multiple layers of wrapping with JAXB
+                     $.each(data, function (k1, v1) {
+                        $.each(v1, function (k2, v2) {
+                            if (v2.hasOwnProperty('name')) {
+                                items.push("<option _portName='"+v2.name+"'>"+v2.name+"</option>");
+                            } else {
+                                $.each(v2, function(k3, v3) {
+                                    items.push("<option _portName='"+v3.name+"'>"+v3.name+"</option>");
+                                });
+                            }
+                        });
+                     });
+                     $('#ports').html(items.join(''));
+                  });
+                }
     	
     	// shows the status success / error to the user
     	function _status(toggleState, success) {
@@ -127,19 +129,19 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </a>
-          <a class="brand" href="#">DaisyWorks Demo</a>
+          <a class="brand" href="http://goo.gl/GSDSA">DaisyWorks Demo</a>
           <div class="nav-collapse">
             <ul class="nav">
-              <li class="active"><a href="#">Home</a></li>
-              <li><a href="#about">About</a></li>
+              <li class="active"><a href="http://goo.gl/GSDSA">Home</a></li>
+              <li><a href="http://www.daisyworks.com">About</a></li>
             </ul>
           </div><!--/.nav-collapse -->
         </div>
       </div>
     </div>
 
-    <div class="container">
 
+    <div class="container">
       <!-- Main hero unit for a primary marketing message or call to action -->
       <div class="hero-unit">
         <h2 style="font-size: 230%;">Door Opener!</h2>
@@ -168,7 +170,9 @@
       <hr>
 
       <footer>
-        <p>DaisyWorks, Inc. 2012 | This software is license free.</p> <a href="http://daisyworks.com">http://daisyworks.com</a>
+        <p><a href="http://daisyworks.com">DaisyWorks, Inc.</a> 2012 | This software is license free.</p>
+        <p/>
+        <a href="http://goo.gl/GSDSA">Daisy WiFi Kickstarter</a>
       </footer>
 
     </div> <!-- /container -->

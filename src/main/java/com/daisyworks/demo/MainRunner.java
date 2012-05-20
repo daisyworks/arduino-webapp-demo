@@ -36,9 +36,11 @@ public class MainRunner {
 			System.err.println("Starting Jetty server on port: "+port+": "+waUrlString);
 			
 			WebAppContext ctx = new WebAppContext();
-			ctx.setWar(waUrlString);
-			ctx.setContextPath("/demo");
-			ctx.setResourceBase("/WEB-INF/web.xml");
+			//ctx.setWar(waUrlString);
+            //ctx.setContextPath("/demo");
+            ctx.setContextPath("/");
+            //ctx.setResourceBase("/WEB-INF/web.xml");
+            ctx.setResourceBase(waUrlString);
 			ctx.setParentLoaderPriority(true);
 			
 			server.setHandler(ctx);
@@ -56,5 +58,4 @@ public class MainRunner {
 		t.printStackTrace(printWriter);
 		return result.toString();
 	}
-
 }

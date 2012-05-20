@@ -8,32 +8,25 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement(name = "port")
 public class Port {
 
-    private String  path;
-    private Integer id;
+    private String name;
 
-    public Port() { }
-    
-    public Port(int id, String path) { this.id = id; this.path = path; }
-
-    public void setPath(String path) {
-        this.path = path;
+    public Port() {
     }
 
-    public String getPath() {
-        return path;
+    public Port(String name) {
+        this.name = name;
     }
-    
-	public Integer getId() {
-		return id;
-	}
 
-	public void setId(Integer id) {
-		this.id = id;
-	}
-    
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getName() {
+        return name;
+    }
+
     @Override
     public String toString() {
-        return String.format("{id=%s, path:%s}", 
-        		id, path);
+        return String.format("{name:%s}", name);
     }
 }
