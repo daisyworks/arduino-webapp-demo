@@ -10,7 +10,8 @@ import org.eclipse.jetty.webapp.WebAppContext;
 
 public class MainRunner {
 
-    private static final int DEFAULT_PORT = 8080;
+    //private static final int DEFAULT_PORT = 8080;
+    private static final int DEFAULT_PORT = 9549;
 
     /**
      * Launches an embedded Jetty server running the webapp herein

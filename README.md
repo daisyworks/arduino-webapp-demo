@@ -62,7 +62,7 @@ Now, open your web browser to http://localhost:8080 -- works in any modern brows
 _Voila!_
 
 #### How To Connect The Hardware To USB 
-TODO
+Plug the USB cable into the PC and into the Arduino. In fact, plug in as many Arduino boards as you like. It will list them all and let you control them all.
 
 #### What If I Want To Change The Code?
 The code is very simple.  There is a [Java servlet](http://en.wikipedia.org/wiki/Java_Servlet) running a RESTful web service that the client (i.e. browser) talks to.  The web browser makes request to the Servlet which handles task requests such as `toggle a switch on/off`.  
