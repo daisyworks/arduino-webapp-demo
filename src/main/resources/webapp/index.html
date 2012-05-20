@@ -7,6 +7,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="">
+    
+    <link rel="icon" href="/dw-icon-48x48.png" />
+    <link rel="shortcut icon" href="/dw-icon-48x48.png" />
+    <link rel="apple-touch-icon" href="/dw-icon-48x48.png"/>
+    <link rel="apple-touch-icon-precomposed" href="/dw-icon-48x48.png"/>
 
     <!-- Le styles -->
     <link href="bootstrap/css/bootstrap.css" rel="stylesheet">
@@ -32,9 +37,14 @@
 
     <script>
     $(document).ready(function() {
+    	if (typeof console === "undefined" || typeof console.log === "undefined") {
+    	    console = {};
+    	    console.log = function() {};
+    	}
     	
     	// fetch the ports on page load
     	fetch();
+    	links();
     	
     	// default behavior on 'close' event is to remove from DOM
     	// we just want to hide it
@@ -51,6 +61,7 @@
       	  console.log("portName: "+portName);
     	  $.ajax({
     	    url: '/service/door/toggle/'+portName+'/1',
+    	    cache: false,
     	    success: function(data) {
     	    	if("true" === data) {
     	    		_status("open", true);
@@ -72,6 +83,7 @@
     	  console.log("portName: "+portName);
     	  $.ajax({
             url: '/service/door/toggle/'+portName+'/0',
+            cache: false,
             success: function(data) {
               if("true" === data) {
             	  _status("closed", true);
@@ -104,6 +116,15 @@
                      $('#ports').html(items.join(''));
                   });
                 }
+    	
+    	function links() {
+            var items = [];
+    		$.get('/service/foo/', function(data) {
+                   items.push("<li>Open: <a href='"+data+"door/toggle/ACM0/1'>"+data+"door/toggle/ACM0/1</a></li>");
+                   items.push("<li>Close: <a href='"+data+"door/toggle/ACM0/0'>"+data+"door/toggle/ACM0/0</a></li>");
+                   $('#shortcutLinks').html(items.join(''));
+    		});
+    	}
     	
     	// shows the status success / error to the user
     	function _status(toggleState, success) {
@@ -173,6 +194,11 @@
         <p><a href="http://daisyworks.com">DaisyWorks, Inc.</a> 2012 | This software is license free.</p>
         <p/>
         <a href="http://goo.gl/GSDSA">Daisy WiFi Kickstarter</a>
+        <p/>
+        <p/>
+        Shortcuts:
+        <ul id="shortcutLinks">
+        </ul>
       </footer>
 
     </div> <!-- /container -->

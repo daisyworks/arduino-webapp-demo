@@ -7,7 +7,9 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.UriInfo;
 
 import org.apache.log4j.Logger;
 
@@ -18,6 +20,9 @@ import org.apache.log4j.Logger;
 public class DoorService {
 
     private static final Logger LOGGER = Logger.getLogger(DoorService.class);
+
+    @Context
+    UriInfo info;
 
     public DoorService() {
     }
@@ -59,6 +64,14 @@ public class DoorService {
     public String toggle(@PathParam("portName") String portName, @PathParam("val") Integer val) {
         LOGGER.info("Toggle USB port " + portName + " =>" + ((val == 1) ? "on" : "off"));
         return RxTx2.send(portName, ((val == 1) ? 'o' : 'c')) ? "true" : "false";
+    }
+
+    @GET
+    @Path("/foo")
+    @Produces(MediaType.TEXT_PLAIN)
+    public String foo() {
+        //http://74.69.44.247:8080/service/
+        return info.getBaseUri().toString();
     }
 
 }
